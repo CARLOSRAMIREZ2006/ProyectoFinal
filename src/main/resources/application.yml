@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: hospital_vm
+    name: hospital-vm
 
   datasource:
     url: jdbc:mysql://localhost:3307/db_hospital_vm
