@@ -20,7 +20,7 @@
 	</properties>
 
 	<dependencies>
-		<!-- Flyway y MySQL -->
+
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
