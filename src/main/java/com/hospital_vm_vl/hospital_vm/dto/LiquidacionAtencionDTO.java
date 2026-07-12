@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Data
-public class FacturacionDTO {
+public class LiquidacionAtencionDTO {
     private Long id;
 
     @NotNull(message = "El ventaId es obligatorio")

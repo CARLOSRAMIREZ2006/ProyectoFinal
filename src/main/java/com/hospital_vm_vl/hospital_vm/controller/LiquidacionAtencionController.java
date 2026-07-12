@@ -1,7 +1,7 @@
 package com.hospital_vm_vl.hospital_vm.controller;
 
-import com.hospital_vm_vl.hospital_vm.dto.FacturacionDTO;
-import com.hospital_vm_vl.hospital_vm.service.FacturacionService;
+import com.hospital_vm_vl.hospital_vm.dto.LiquidacionAtencionDTO;
+import com.hospital_vm_vl.hospital_vm.service.LiquidacionAtencionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/facturacion")
-public class FacturacionController {
+@RequestMapping("/api/liquidacion-atencion")
+public class LiquidacionAtencionController {
     @Autowired
-    private FacturacionService service;
+    private LiquidacionAtencionService service;
 
     @GetMapping
-    public ResponseEntity<List<FacturacionDTO>> getAll() {
+    public ResponseEntity<List<LiquidacionAtencionDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<FacturacionDTO> create(@Valid @RequestBody FacturacionDTO dto) {
+    public ResponseEntity<LiquidacionAtencionDTO> create(@Valid @RequestBody LiquidacionAtencionDTO dto) {
         return ResponseEntity.status(201).body(service.save(dto));
     }
 

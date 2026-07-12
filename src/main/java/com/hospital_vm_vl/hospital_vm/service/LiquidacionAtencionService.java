@@ -1,8 +1,8 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.FacturacionDTO;
-import com.hospital_vm_vl.hospital_vm.model.Facturacion;
-import com.hospital_vm_vl.hospital_vm.repository.FacturacionRepository;
+import com.hospital_vm_vl.hospital_vm.dto.LiquidacionAtencionDTO;
+import com.hospital_vm_vl.hospital_vm.model.LiquidacionAtencion;
+import com.hospital_vm_vl.hospital_vm.repository.LiquidacionAtencionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FacturacionService {
+public class LiquidacionAtencionService {
     @Autowired
-    private FacturacionRepository repository;
+    private LiquidacionAtencionRepository repository;
 
-    public List<FacturacionDTO> findAll() {
+    public List<LiquidacionAtencionDTO> findAll() {
         return repository.findAll().stream().map(f -> {
-            FacturacionDTO dto = new FacturacionDTO();
+            LiquidacionAtencionDTO dto = new LiquidacionAtencionDTO();
             dto.setId(f.getId());
             dto.setVentaId(f.getVentaId());
             dto.setFechaEmision(f.getFechaEmision());
@@ -25,9 +25,9 @@ public class FacturacionService {
         }).collect(Collectors.toList());
     }
 
-    public FacturacionDTO save(FacturacionDTO dto) {
-        Facturacion f = new Facturacion(null, dto.getVentaId(), LocalDateTime.now(), dto.getMontoTotal());
-        Facturacion saved = repository.save(f);
+    public LiquidacionAtencionDTO save(LiquidacionAtencionDTO dto) {
+        LiquidacionAtencion f = new LiquidacionAtencion(null, dto.getVentaId(), LocalDateTime.now(), dto.getMontoTotal());
+        LiquidacionAtencion saved = repository.save(f);
         dto.setId(saved.getId());
         dto.setFechaEmision(saved.getFechaEmision());
         return dto;
