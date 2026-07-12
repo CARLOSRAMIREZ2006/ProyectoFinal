@@ -1,7 +1,7 @@
 package com.hospital_vm_vl.hospital_vm.controller;
 
-import com.hospital_vm_vl.hospital_vm.dto.PromocionDTO;
-import com.hospital_vm_vl.hospital_vm.service.PromocionService;
+import com.hospital_vm_vl.hospital_vm.dto.ConvenioSaludDTO;
+import com.hospital_vm_vl.hospital_vm.service.ConvenioSaludService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/promociones")
-public class PromocionController {
+@RequestMapping("/api/convenio-salud")
+public class ConvenioSaludController {
     @Autowired
-    private PromocionService service;
+    private ConvenioSaludService service;
 
     @GetMapping
-    public ResponseEntity<List<PromocionDTO>> getAll() {
+    public ResponseEntity<List<ConvenioSaludDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<PromocionDTO> create(@Valid @RequestBody PromocionDTO dto) {
+    public ResponseEntity<ConvenioSaludDTO> create(@Valid @RequestBody ConvenioSaludDTO dto) {
         return ResponseEntity.status(201).body(service.save(dto));
     }
 
