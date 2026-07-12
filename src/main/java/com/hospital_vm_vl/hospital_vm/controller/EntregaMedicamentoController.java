@@ -2,6 +2,9 @@ package com.hospital_vm_vl.hospital_vm.controller;
 
 import com.hospital_vm_vl.hospital_vm.dto.EntregaMedicamentoDTO;
 import com.hospital_vm_vl.hospital_vm.service.EntregaMedicamentoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,21 +13,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/entrega-medicamento")
+@Tag(name = "Entrega de Medicamentos", description = "Gestión de los envíos y estados de entrega de medicamentos")
 public class EntregaMedicamentoController {
+
     @Autowired
     private EntregaMedicamentoService service;
 
     @GetMapping
+    @Operation(summary = "Listar entregas", description = "Obtiene todas las entregas registradas en el sistema")
     public ResponseEntity<List<EntregaMedicamentoDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
+    @Operation(summary = "Registrar entrega", description = "Crea una nueva solicitud de entrega de medicamentos")
+    @ApiResponse(responseCode = "201", description = "Entrega creada exitosamente")
     public ResponseEntity<EntregaMedicamentoDTO> create(@Valid @RequestBody EntregaMedicamentoDTO dto) {
         return ResponseEntity.status(201).body(service.save(dto));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar entrega", description = "Elimina un registro de entrega por su ID")
+    @ApiResponse(responseCode = "204", description = "Entrega eliminada")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
