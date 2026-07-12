@@ -1,7 +1,7 @@
 package com.hospital_vm_vl.hospital_vm.controller;
 
-import com.hospital_vm_vl.hospital_vm.dto.DespachoDTO;
-import com.hospital_vm_vl.hospital_vm.service.DespachoService;
+import com.hospital_vm_vl.hospital_vm.dto.EntregaMedicamentoDTO;
+import com.hospital_vm_vl.hospital_vm.service.EntregaMedicamentoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/despachos")
-public class DespachoController {
+@RequestMapping("/api/entrega-medicamento")
+public class EntregaMedicamentoController {
     @Autowired
-    private DespachoService service;
+    private EntregaMedicamentoService service;
 
     @GetMapping
-    public ResponseEntity<List<DespachoDTO>> getAll() {
+    public ResponseEntity<List<EntregaMedicamentoDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<DespachoDTO> create(@Valid @RequestBody DespachoDTO dto) {
+    public ResponseEntity<EntregaMedicamentoDTO> create(@Valid @RequestBody EntregaMedicamentoDTO dto) {
         return ResponseEntity.status(201).body(service.save(dto));
     }
 

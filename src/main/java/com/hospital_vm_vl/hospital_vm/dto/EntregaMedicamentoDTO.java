@@ -4,7 +4,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class DespachoDTO {
+public class EntregaMedicamentoDTO {
     private Long id;
 
     @NotNull(message = "El ventaId es obligatorio")
