@@ -1,7 +1,7 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.DevolucionDTO;
-import com.hospital_vm_vl.hospital_vm.model.Devolucion;
+import com.hospital_vm_vl.hospital_vm.dto.ReembolsoAtencionDTO;
+import com.hospital_vm_vl.hospital_vm.model.ReembolsoAtencion;
 import com.hospital_vm_vl.hospital_vm.repository.DevolucionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,13 +20,13 @@ public class DevolucionServiceTest {
     @Mock
     private DevolucionRepository repository;
     @InjectMocks
-    private DevolucionService service;
+    private ReembolsoAtencionService service;
 
     @Test
     void testFindAll() {
-        Devolucion d = new Devolucion(1L, 1L, "Defecto", LocalDateTime.now());
+        ReembolsoAtencion d = new ReembolsoAtencion(1L, 1L, "Defecto", LocalDateTime.now());
         when(repository.findAll()).thenReturn(Arrays.asList(d));
-        List<DevolucionDTO> resultado = service.findAll();
+        List<ReembolsoAtencionDTO> resultado = service.findAll();
         assertEquals("Defecto", resultado.get(0).getMotivo());
     }
 }

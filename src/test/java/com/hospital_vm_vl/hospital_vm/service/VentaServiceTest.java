@@ -1,8 +1,8 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.VentaDTO;
-import com.hospital_vm_vl.hospital_vm.model.Venta;
-import com.hospital_vm_vl.hospital_vm.repository.VentaRepository;
+import com.hospital_vm_vl.hospital_vm.dto.CitaDTO;
+import com.hospital_vm_vl.hospital_vm.model.Cita;
+import com.hospital_vm_vl.hospital_vm.repository.CitaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,17 +19,17 @@ import static org.mockito.Mockito.*;
 public class VentaServiceTest {
 
     @Mock
-    private VentaRepository repository;
+    private CitaRepository repository;
 
     @InjectMocks
-    private VentaService service;
+    private CitaService service;
 
     @Test
     void testFindAll() {
-        Venta v = new Venta(1L, 10L, LocalDateTime.now(), 500.0);
+        Cita v = new Cita(1L, 10L, LocalDateTime.now(), 500.0);
         when(repository.findAll()).thenReturn(Arrays.asList(v));
 
-        List<VentaDTO> resultado = service.findAll();
+        List<CitaDTO> resultado = service.findAll();
 
         assertEquals(1, resultado.size());
         assertEquals(500.0, resultado.get(0).getTotal());
@@ -37,15 +37,15 @@ public class VentaServiceTest {
 
     @Test
     void testSave() {
-        VentaDTO dto = new VentaDTO();
+        CitaDTO dto = new CitaDTO();
         dto.setClienteId(10L);
         dto.setTotal(500.0);
-        Venta saved = new Venta(1L, 10L, LocalDateTime.now(), 500.0);
-        when(repository.save(any(Venta.class))).thenReturn(saved);
+        Cita saved = new Cita(1L, 10L, LocalDateTime.now(), 500.0);
+        when(repository.save(any(Cita.class))).thenReturn(saved);
 
-        VentaDTO resultado = service.save(dto);
+        CitaDTO resultado = service.save(dto);
 
         assertNotNull(resultado.getId());
-        verify(repository, times(1)).save(any(Venta.class));
+        verify(repository, times(1)).save(any(Cita.class));
     }
 }

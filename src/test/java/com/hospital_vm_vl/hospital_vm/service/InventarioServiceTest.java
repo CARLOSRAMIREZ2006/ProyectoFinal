@@ -1,8 +1,8 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.InventarioDTO;
-import com.hospital_vm_vl.hospital_vm.model.Inventario;
-import com.hospital_vm_vl.hospital_vm.repository.InventarioRepository;
+import com.hospital_vm_vl.hospital_vm.dto.StockFarmaciaDTO;
+import com.hospital_vm_vl.hospital_vm.model.StockFarmacia;
+import com.hospital_vm_vl.hospital_vm.repository.StockFarmaciaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,17 +18,17 @@ import static org.mockito.Mockito.*;
 public class InventarioServiceTest {
 
     @Mock
-    private InventarioRepository repository;
+    private StockFarmaciaRepository repository;
 
     @InjectMocks
-    private InventarioService service;
+    private StockFarmaciaService service;
 
     @Test
     void testFindById_Success() {
-        Inventario i = new Inventario(1L, 101L, 50);
+        StockFarmacia i = new StockFarmacia(1L, 101L, 50);
         when(repository.findById(1L)).thenReturn(Optional.of(i));
 
-        InventarioDTO resultado = service.findById(1L);
+        StockFarmaciaDTO resultado = service.findById(1L);
 
         assertEquals(50, resultado.getCantidad());
         assertEquals(101L, resultado.getProductoId());

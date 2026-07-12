@@ -1,8 +1,8 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.ProductoDTO;
-import com.hospital_vm_vl.hospital_vm.model.Producto;
-import com.hospital_vm_vl.hospital_vm.repository.ProductoRepository;
+import com.hospital_vm_vl.hospital_vm.dto.MedicamentoDTO;
+import com.hospital_vm_vl.hospital_vm.model.Medicamento;
+import com.hospital_vm_vl.hospital_vm.repository.MedicamentoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,19 +20,19 @@ import static org.mockito.Mockito.*;
 public class ProductoServiceTest {
 
     @Mock
-    private ProductoRepository repository;
+    private MedicamentoRepository repository;
 
     @InjectMocks
-    private ProductoService service;
+    private MedicamentoService service;
 
     @Test
     void testFindAll() {
         // Given
-        Producto p1 = new Producto(1L, "Producto A", 100.0, 10);
+        Medicamento p1 = new Medicamento(1L, "Producto A", 100.0, 10);
         when(repository.findAll()).thenReturn(Arrays.asList(p1));
 
         // When
-        List<ProductoDTO> resultado = service.findAll();
+        List<MedicamentoDTO> resultado = service.findAll();
 
         // Then
         assertEquals(1, resultado.size());
@@ -43,11 +43,11 @@ public class ProductoServiceTest {
     @Test
     void testFindById_Success() {
         // Given
-        Producto p1 = new Producto(1L, "Producto A", 100.0, 10);
+        Medicamento p1 = new Medicamento(1L, "Producto A", 100.0, 10);
         when(repository.findById(1L)).thenReturn(Optional.of(p1));
 
         // When
-        ProductoDTO resultado = service.findById(1L);
+        MedicamentoDTO resultado = service.findById(1L);
 
         // Then
         assertNotNull(resultado);
@@ -66,17 +66,17 @@ public class ProductoServiceTest {
     @Test
     void testSave() {
         // Given
-        ProductoDTO dto = new ProductoDTO();
+        MedicamentoDTO dto = new MedicamentoDTO();
         dto.setNombre("Producto Nuevo");
         dto.setPrecio(50.0);
-        Producto saved = new Producto(1L, "Producto Nuevo", 50.0, 5);
-        when(repository.save(any(Producto.class))).thenReturn(saved);
+        Medicamento saved = new Medicamento(1L, "Producto Nuevo", 50.0, 5);
+        when(repository.save(any(Medicamento.class))).thenReturn(saved);
 
         // When
-        ProductoDTO resultado = service.save(dto);
+        MedicamentoDTO resultado = service.save(dto);
 
         // Then
         assertEquals(1L, resultado.getId());
-        verify(repository, times(1)).save(any(Producto.class));
+        verify(repository, times(1)).save(any(Medicamento.class));
     }
 }

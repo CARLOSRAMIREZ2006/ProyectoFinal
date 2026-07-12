@@ -1,8 +1,8 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.DetalleVentaDTO;
-import com.hospital_vm_vl.hospital_vm.model.DetalleVenta;
-import com.hospital_vm_vl.hospital_vm.repository.DetalleVentaRepository;
+import com.hospital_vm_vl.hospital_vm.dto.DetalleAtencionDTO;
+import com.hospital_vm_vl.hospital_vm.model.DetalleAtencion;
+import com.hospital_vm_vl.hospital_vm.repository.DetalleAtencionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,17 +18,17 @@ import static org.mockito.Mockito.*;
 public class DetalleVentaServiceTest {
 
     @Mock
-    private DetalleVentaRepository repository;
+    private DetalleAtencionRepository repository;
 
     @InjectMocks
-    private DetalleVentaService service;
+    private DetalleAtencionService service;
 
     @Test
     void testFindAll() {
-        DetalleVenta dv = new DetalleVenta(1L, 1L, 101L, 2, 50.0);
+        DetalleAtencion dv = new DetalleAtencion(1L, 1L, 101L, 2, 50.0);
         when(repository.findAll()).thenReturn(Arrays.asList(dv));
 
-        List<DetalleVentaDTO> resultado = service.findAll();
+        List<DetalleAtencionDTO> resultado = service.findAll();
 
         assertEquals(1, resultado.size());
         assertEquals(2, resultado.get(0).getCantidad());
@@ -36,17 +36,17 @@ public class DetalleVentaServiceTest {
 
     @Test
     void testSave() {
-        DetalleVentaDTO dto = new DetalleVentaDTO();
+        DetalleAtencionDTO dto = new DetalleAtencionDTO();
         dto.setVentaId(1L);
         dto.setProductoId(101L);
         dto.setCantidad(2);
 
-        DetalleVenta saved = new DetalleVenta(1L, 1L, 101L, 2, 50.0);
-        when(repository.save(any(DetalleVenta.class))).thenReturn(saved);
+        DetalleAtencion saved = new DetalleAtencion(1L, 1L, 101L, 2, 50.0);
+        when(repository.save(any(DetalleAtencion.class))).thenReturn(saved);
 
-        DetalleVentaDTO resultado = service.save(dto);
+        DetalleAtencionDTO resultado = service.save(dto);
 
         assertNotNull(resultado.getId());
-        verify(repository, times(1)).save(any(DetalleVenta.class));
+        verify(repository, times(1)).save(any(DetalleAtencion.class));
     }
 }
