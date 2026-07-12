@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 @Data
-public class ClienteDTO {
+public class PacienteDTO {
     private Long id;
 
     @NotNull(message = "El nombre es obligatorio")

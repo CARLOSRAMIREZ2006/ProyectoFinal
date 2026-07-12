@@ -1,21 +1,21 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.ClienteDTO;
-import com.hospital_vm_vl.hospital_vm.model.Cliente;
-import com.hospital_vm_vl.hospital_vm.repository.ClienteRepository;
+import com.hospital_vm_vl.hospital_vm.dto.PacienteDTO;
+import com.hospital_vm_vl.hospital_vm.model.Paciente;
+import com.hospital_vm_vl.hospital_vm.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ClienteService {
+public class PacienteService {
     @Autowired
-    private ClienteRepository repository;
+    private PacienteRepository repository;
 
-    public List<ClienteDTO> findAll() {
+    public List<PacienteDTO> findAll() {
         return repository.findAll().stream().map(c -> {
-            ClienteDTO dto = new ClienteDTO();
+            PacienteDTO dto = new PacienteDTO();
             dto.setId(c.getId());
             dto.setNombre(c.getNombre());
             dto.setEmail(c.getEmail());
@@ -24,9 +24,9 @@ public class ClienteService {
         }).collect(Collectors.toList());
     }
 
-    public ClienteDTO findById(Long id) {
-        Cliente c = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-        ClienteDTO dto = new ClienteDTO();
+    public PacienteDTO findById(Long id) {
+        Paciente c = repository.findById(id).orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+        PacienteDTO dto = new PacienteDTO();
         dto.setId(c.getId());
         dto.setNombre(c.getNombre());
         dto.setEmail(c.getEmail());
@@ -34,19 +34,19 @@ public class ClienteService {
         return dto;
     }
 
-    public ClienteDTO save(ClienteDTO dto) {
-        Cliente c = new Cliente(null, dto.getNombre(), dto.getEmail(), dto.getTelefono());
-        Cliente saved = repository.save(c);
+    public PacienteDTO save(PacienteDTO dto) {
+        Paciente c = new Paciente(null, dto.getNombre(), dto.getEmail(), dto.getTelefono());
+        Paciente saved = repository.save(c);
         dto.setId(saved.getId());
         return dto;
     }
 
-    public ClienteDTO update(Long id, ClienteDTO dto) {
-        Cliente c = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    public PacienteDTO update(Long id, PacienteDTO dto) {
+        Paciente c = repository.findById(id).orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
         c.setNombre(dto.getNombre());
         c.setEmail(dto.getEmail());
         c.setTelefono(dto.getTelefono());
-        Cliente updated = repository.save(c);
+        Paciente updated = repository.save(c);
         dto.setId(updated.getId());
         return dto;
     }
