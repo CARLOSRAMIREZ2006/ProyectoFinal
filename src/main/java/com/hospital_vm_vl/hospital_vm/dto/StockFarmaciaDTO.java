@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @Data
-public class InventarioDTO {
+public class StockFarmaciaDTO {
     private Long id;
 
     @NotNull(message = "El ID del producto es obligatorio")
