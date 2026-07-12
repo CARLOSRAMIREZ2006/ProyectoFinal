@@ -1,7 +1,7 @@
 package com.hospital_vm_vl.hospital_vm.controller;
 
-import com.hospital_vm_vl.hospital_vm.dto.VentaDTO;
-import com.hospital_vm_vl.hospital_vm.service.VentaService;
+import com.hospital_vm_vl.hospital_vm.dto.CitaDTO;
+import com.hospital_vm_vl.hospital_vm.service.CitaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ventas")
-public class VentaController {
+@RequestMapping("/api/citas")
+public class CitaController {
     @Autowired
-    private VentaService service;
+    private CitaService service;
 
     @GetMapping
-    public ResponseEntity<List<VentaDTO>> getAll() {
+    public ResponseEntity<List<CitaDTO>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<VentaDTO> create(@Valid @RequestBody VentaDTO dto) {
+    public ResponseEntity<CitaDTO> create(@Valid @RequestBody CitaDTO dto) {
         return ResponseEntity.status(201).body(service.save(dto));
     }
 
