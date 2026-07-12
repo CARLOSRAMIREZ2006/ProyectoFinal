@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Devolucion {
+public class ReembolsoAtencion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

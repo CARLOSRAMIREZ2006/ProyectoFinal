@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
-public class DevolucionDTO {
+public class ReembolsoAtencionDTO {
     private Long id;
 
     @NotNull(message = "El ventaId es obligatorio")
