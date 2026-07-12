@@ -1,21 +1,21 @@
 package com.hospital_vm_vl.hospital_vm.service;
 
-import com.hospital_vm_vl.hospital_vm.dto.ProductoDTO;
-import com.hospital_vm_vl.hospital_vm.model.Producto;
-import com.hospital_vm_vl.hospital_vm.repository.ProductoRepository;
+import com.hospital_vm_vl.hospital_vm.dto.MedicamentoDTO;
+import com.hospital_vm_vl.hospital_vm.model.Medicamento;
+import com.hospital_vm_vl.hospital_vm.repository.MedicamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductoService {
+public class MedicamentoService {
     @Autowired
-    private ProductoRepository repository;
+    private MedicamentoRepository repository;
 
-    public List<ProductoDTO> findAll() {
+    public List<MedicamentoDTO> findAll() {
         return repository.findAll().stream().map(p -> {
-            ProductoDTO dto = new ProductoDTO();
+            MedicamentoDTO dto = new MedicamentoDTO();
             dto.setId(p.getId());
             dto.setNombre(p.getNombre());
             dto.setPrecio(p.getPrecio());
@@ -24,9 +24,9 @@ public class ProductoService {
         }).collect(Collectors.toList());
     }
 
-    public ProductoDTO findById(Long id) {
-        Producto p = repository.findById(id).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        ProductoDTO dto = new ProductoDTO();
+    public MedicamentoDTO findById(Long id) {
+        Medicamento p = repository.findById(id).orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
+        MedicamentoDTO dto = new MedicamentoDTO();
         dto.setId(p.getId());
         dto.setNombre(p.getNombre());
         dto.setPrecio(p.getPrecio());
@@ -34,19 +34,19 @@ public class ProductoService {
         return dto;
     }
 
-    public ProductoDTO save(ProductoDTO dto) {
-        Producto p = new Producto(null, dto.getNombre(), dto.getPrecio(), dto.getStock());
-        Producto saved = repository.save(p);
+    public MedicamentoDTO save(MedicamentoDTO dto) {
+        Medicamento p = new Medicamento(null, dto.getNombre(), dto.getPrecio(), dto.getStock());
+        Medicamento saved = repository.save(p);
         dto.setId(saved.getId());
         return dto;
     }
 
-    public ProductoDTO update(Long id, ProductoDTO dto) {
-        Producto p = repository.findById(id).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    public MedicamentoDTO update(Long id, MedicamentoDTO dto) {
+        Medicamento p = repository.findById(id).orElseThrow(() -> new RuntimeException("Medicamento no encontrado"));
         p.setNombre(dto.getNombre());
         p.setPrecio(dto.getPrecio());
         p.setStock(dto.getStock());
-        Producto updated = repository.save(p);
+        Medicamento updated = repository.save(p);
         dto.setId(updated.getId());
         return dto;
     }

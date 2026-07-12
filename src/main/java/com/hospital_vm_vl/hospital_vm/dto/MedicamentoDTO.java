@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @Data
-public class ProductoDTO {
+public class MedicamentoDTO {
     private Long id;
 
     @NotNull(message = "El nombre es obligatorio")
