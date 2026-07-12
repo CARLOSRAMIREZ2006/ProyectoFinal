@@ -3,7 +3,6 @@ spring:
     name: hospital_vm
 
   datasource:
-
     url: jdbc:mysql://localhost:3307/db_hospital_vm
     username: root
     password: ""
@@ -19,3 +18,8 @@ spring:
 
   flyway:
     enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
