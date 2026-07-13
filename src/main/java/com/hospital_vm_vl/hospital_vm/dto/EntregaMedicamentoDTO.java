@@ -17,7 +17,7 @@ public class EntregaMedicamentoDTO {
     private Long ventaId;
 
     @NotNull(message = "La dirección es obligatoria")
-    @Size(min = 5, message = "La dirección debe ser detallada")
+    @Size(min = 5, message = "La dirección debe tener al menos 5 caracteres")
     @Schema(description = "Dirección de despacho", example = "Av. Principal 123, Santiago")
     private String direccion;
 
