@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -35,7 +36,7 @@ public class StockFarmaciaController {
     @Operation(summary = "Registrar nuevo stock", description = "Añade un medicamento al inventario")
     @ApiResponse(responseCode = "201", description = "Stock creado con éxito")
     public ResponseEntity<StockFarmaciaDTO> create(@Valid @RequestBody StockFarmaciaDTO dto) {
-        return ResponseEntity.status(201).body(service.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 
     @PutMapping("/{id}")

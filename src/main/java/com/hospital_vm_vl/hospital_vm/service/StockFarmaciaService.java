@@ -5,6 +5,7 @@ import com.hospital_vm_vl.hospital_vm.model.StockFarmacia;
 import com.hospital_vm_vl.hospital_vm.repository.StockFarmaciaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,24 +15,16 @@ public class StockFarmaciaService {
     private StockFarmaciaRepository repository;
 
     public List<StockFarmaciaDTO> findAll() {
-        return repository.findAll().stream().map(i -> {
-            StockFarmaciaDTO dto = new StockFarmaciaDTO();
-            dto.setId(i.getId());
-            dto.setProductoId(i.getProductoId());
-            dto.setCantidad(i.getCantidad());
-            return dto;
-        }).collect(Collectors.toList());
+        return repository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public StockFarmaciaDTO findById(Long id) {
-        StockFarmacia i = repository.findById(id).orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
-        StockFarmaciaDTO dto = new StockFarmaciaDTO();
-        dto.setId(i.getId());
-        dto.setProductoId(i.getProductoId());
-        dto.setCantidad(i.getCantidad());
-        return dto;
+        StockFarmacia i = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado con ID: " + id));
+        return toDTO(i);
     }
 
+    @Transactional
     public StockFarmaciaDTO save(StockFarmaciaDTO dto) {
         StockFarmacia i = new StockFarmacia(null, dto.getProductoId(), dto.getCantidad());
         StockFarmacia saved = repository.save(i);
@@ -39,15 +32,27 @@ public class StockFarmaciaService {
         return dto;
     }
 
+    @Transactional
     public StockFarmaciaDTO update(Long id, StockFarmaciaDTO dto) {
-        StockFarmacia i = repository.findById(id).orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+        StockFarmacia i = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado con ID: " + id));
         i.setCantidad(dto.getCantidad());
+        // Se mantiene productoId o se actualiza según tu regla de negocio
+        i.setProductoId(dto.getProductoId());
         StockFarmacia updated = repository.save(i);
-        dto.setId(updated.getId());
-        return dto;
+        return toDTO(updated);
     }
 
     public void delete(Long id) {
+        if (!repository.existsById(id)) throw new RuntimeException("Inventario no encontrado");
         repository.deleteById(id);
+    }
+
+    private StockFarmaciaDTO toDTO(StockFarmacia i) {
+        StockFarmaciaDTO dto = new StockFarmaciaDTO();
+        dto.setId(i.getId());
+        dto.setProductoId(i.getProductoId());
+        dto.setCantidad(i.getCantidad());
+        return dto;
     }
 }
