@@ -49,14 +49,26 @@ public class StockFarmaciaServiceTest {
     }
 
     @Test
-    void testDelete() {
-        // GIVEN
+    void testDelete_Success() {
+        // GIVEN: Le decimos a Mockito que el objeto SÍ existe en existsById
+        when(repository.existsById(1L)).thenReturn(true);
         doNothing().when(repository).deleteById(1L);
 
         // WHEN
         service.delete(1L);
 
-        // THEN
+        // THEN: Verificamos que pasó por ambos métodos del repositorio
+        verify(repository, times(1)).existsById(1L);
         verify(repository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDelete_NotFound() {
+        // GIVEN: Simulamos que NO existe
+        when(repository.existsById(999L)).thenReturn(false);
+
+        // WHEN / THEN: Se debe lanzar la excepción y NUNCA se debe llamar a deleteById
+        assertThrows(RuntimeException.class, () -> service.delete(999L));
+        verify(repository, never()).deleteById(anyLong());
     }
 }

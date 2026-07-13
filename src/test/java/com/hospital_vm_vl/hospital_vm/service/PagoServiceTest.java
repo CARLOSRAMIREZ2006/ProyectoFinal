@@ -45,6 +45,7 @@ public class PagoServiceTest {
     void testSave() {
         // GIVEN
         PagoDTO dto = new PagoDTO();
+        dto.setVentaId(1L);
         dto.setMonto(250.0);
         dto.setMetodoPago("Tarjeta");
 
@@ -57,19 +58,8 @@ public class PagoServiceTest {
         // THEN
         assertNotNull(resultado.getId());
         assertEquals(dto.getMetodoPago(), resultado.getMetodoPago());
+        assertEquals(dto.getMonto(), resultado.getMonto());
         verify(repository, times(1)).save(any(Pago.class));
-    }
-
-    @Test
-    void testDelete() {
-        // GIVEN
-        doNothing().when(repository).deleteById(1L);
-
-        // WHEN
-        service.delete(1L);
-
-        // THEN
-        verify(repository, times(1)).deleteById(1L);
     }
 
     @Test
@@ -79,5 +69,29 @@ public class PagoServiceTest {
 
         // WHEN / THEN
         assertThrows(RuntimeException.class, () -> service.findById(999L));
+    }
+
+    @Test
+    void testDelete_Success() {
+        // GIVEN: Le decimos a Mockito que el objeto SÍ existe en existsById
+        when(repository.existsById(1L)).thenReturn(true);
+        doNothing().when(repository).deleteById(1L);
+
+        // WHEN
+        service.delete(1L);
+
+        // THEN: Verificamos que pasó por ambos métodos del repositorio
+        verify(repository, times(1)).existsById(1L);
+        verify(repository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDelete_NotFound() {
+        // GIVEN: Simulamos que NO existe
+        when(repository.existsById(999L)).thenReturn(false);
+
+        // WHEN / THEN: Se debe lanzar la excepción y NUNCA se debe llamar a deleteById
+        assertThrows(RuntimeException.class, () -> service.delete(999L));
+        verify(repository, never()).deleteById(anyLong());
     }
 }
