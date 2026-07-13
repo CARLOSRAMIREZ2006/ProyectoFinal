@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -24,11 +25,23 @@ public class PagoController {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener pago por ID")
+    public ResponseEntity<PagoDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
     @PostMapping
     @Operation(summary = "Registrar pago", description = "Crea un nuevo registro de pago en el sistema")
     @ApiResponse(responseCode = "201", description = "Pago registrado exitosamente")
     public ResponseEntity<PagoDTO> create(@Valid @RequestBody PagoDTO dto) {
-        return ResponseEntity.status(201).body(service.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar pago")
+    public ResponseEntity<PagoDTO> update(@PathVariable Long id, @Valid @RequestBody PagoDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")

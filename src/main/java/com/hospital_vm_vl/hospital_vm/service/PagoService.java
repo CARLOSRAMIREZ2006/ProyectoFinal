@@ -5,6 +5,7 @@ import com.hospital_vm_vl.hospital_vm.model.Pago;
 import com.hospital_vm_vl.hospital_vm.repository.PagoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,16 +15,16 @@ public class PagoService {
     private PagoRepository repository;
 
     public List<PagoDTO> findAll() {
-        return repository.findAll().stream().map(p -> {
-            PagoDTO dto = new PagoDTO();
-            dto.setId(p.getId());
-            dto.setVentaId(p.getVentaId());
-            dto.setMonto(p.getMonto());
-            dto.setMetodoPago(p.getMetodoPago());
-            return dto;
-        }).collect(Collectors.toList());
+        return repository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    public PagoDTO findById(Long id) {
+        Pago p = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pago no encontrado con ID: " + id));
+        return toDTO(p);
+    }
+
+    @Transactional
     public PagoDTO save(PagoDTO dto) {
         Pago p = new Pago(null, dto.getVentaId(), dto.getMonto(), dto.getMetodoPago());
         Pago saved = repository.save(p);
@@ -31,7 +32,28 @@ public class PagoService {
         return dto;
     }
 
+    @Transactional
+    public PagoDTO update(Long id, PagoDTO dto) {
+        Pago p = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pago no encontrado con ID: " + id));
+        p.setVentaId(dto.getVentaId());
+        p.setMonto(dto.getMonto());
+        p.setMetodoPago(dto.getMetodoPago());
+        Pago updated = repository.save(p);
+        return toDTO(updated);
+    }
+
     public void delete(Long id) {
+        if (!repository.existsById(id)) throw new RuntimeException("Pago no encontrado");
         repository.deleteById(id);
+    }
+
+    private PagoDTO toDTO(Pago p) {
+        PagoDTO dto = new PagoDTO();
+        dto.setId(p.getId());
+        dto.setVentaId(p.getVentaId());
+        dto.setMonto(p.getMonto());
+        dto.setMetodoPago(p.getMetodoPago());
+        return dto;
     }
 }
