@@ -18,41 +18,84 @@ El ecosistema está diseñado para ser escalable, utilizando un servidor de desc
 
 | Categoría | Tecnología / Herramienta |
 | :--- | :--- |
-| **Lenguaje Base** | **Java 21** *(Requisito estricto)* |
+| **Lenguaje Base** | **Java 21** |
 | **Framework Principal** | Spring Boot 3.x |
-| **Orquestación y Enrutamiento**| Spring Cloud (Netflix Eureka, API Gateway) |
-| **Comunicación HTTP / API** | Spring WebFlux (WebClient) |
-| **Persistencia de Datos** | Spring Data JPA / Hibernate |
-| **Migraciones de BD** | Flyway |
-| **Base de Datos** | MySQL (Vía Laragon) |
+| **Orquestación** | Spring Cloud (Eureka, API Gateway) |
+| **Comunicación API** | Spring WebFlux |
+| **Persistencia** | Spring Data JPA / Hibernate |
+| **Migraciones** | Flyway |
+| **Base de Datos** | MySQL |
 | **Contenedores** | Docker |
 | **Testing** | JUnit 5, Mockito |
-| **Documentación** | Swagger (OpenAPI 3.0) |
 
 ---
 
 ## 🌐 Ecosistema de Microservicios
 
-Este repositorio forma parte de una arquitectura mayor. Para el funcionamiento completo del ecosistema, interactúa con los siguientes proyectos:
-
-1. **Eureka Server:** Actúa como el servidor de descubrimiento (puerto `8761`). Todos los microservicios se registran aquí al inicializarse.
-2. **API Gateway:** Es el punto de entrada único para el cliente. Enruta las peticiones entrantes hacia el microservicio correspondiente (puerto `8080`).
-3. **Hospital VM (Este microservicio):** Contiene la lógica de negocio, operando de manera independiente en el puerto `8081`.
+1. **Eureka Server:** Servidor de descubrimiento (puerto `8761`).
+2. **API Gateway:** Enrutador central (puerto `8080`).
+3. **Hospital VM:** Microservicio de lógica de negocio (puerto `8081`).
 
 ---
 
-## 🚀 Requisitos Previos e Instalación
+## 🚀 Requisitos e Instalación
 
-Para compilar y ejecutar este proyecto, asegúrate de cumplir con los siguientes requisitos:
+1. **JDK 21** y **Maven**.
+2. **Laragon (MySQL)**: Corriendo en puerto `3307`.
+3. **Docker**: Para despliegue.
 
-1. **Java Development Kit (JDK) 21:** Obligatorio para evitar problemas de compatibilidad.
-2. **Apache Maven:** Herramienta de gestión de dependencias.
-3. **Laragon (MySQL):** Gestor de base de datos local corriendo en el puerto `3307`.
-4. **Docker (Opcional):** Para revisión de imágenes empaquetadas.
-
-### Configuración de la Base de Datos
-
-Crea el esquema en tu gestor de base de datos MySQL (a través de Laragon) antes de iniciar:
-
+### Configuración de DB
 ```sql
 CREATE DATABASE db_hospital_vm;
+
+```
+
+---
+
+## 🐳 Despliegue con Docker (Paso a Paso)
+
+```bash
+# 1. Crear red
+docker network create app-net
+
+# 2. Eureka Server
+cd eureka-server && mvn clean package -DskipTests && docker build -t eureka-server .
+docker run -d --name eureka-server --network app-net -p 8761:8761 eureka-server
+
+# 3. API Gateway
+cd ../api-gateway && mvn clean package -DskipTests && docker build -t api-gateway .
+docker run -d --name api-gateway --network app-net -p 8080:8080 -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/ api-gateway
+
+# 4. Microservicio (Hospital VM)
+cd ../hospital-vm && mvn clean package -DskipTests && docker build -t hospital-vm .
+docker run -d --name hospital-vm --network app-net -p 8081:8081 -e EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/ -e SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3307/db_hospital_vm hospital-vm
+
+```
+
+---
+
+## 🧪 Guía de Pruebas (Postman)
+
+### A. Vía API Gateway (Puerto 8080)
+
+* **Crear:** `POST http://localhost:8080/hospital-vm/api/stock-farmacia`
+* **Listar:** `GET http://localhost:8080/hospital-vm/api/stock-farmacia`
+* **Consultar ID:** `GET http://localhost:8080/hospital-vm/api/stock-farmacia/1`
+* **Actualizar:** `PUT http://localhost:8080/hospital-vm/api/stock-farmacia/1`
+* **Eliminar:** `DELETE http://localhost:8080/hospital-vm/api/stock-farmacia/1`
+
+### B. Directo al Microservicio (Puerto 8081)
+
+* **Crear:** `POST http://localhost:8081/api/stock-farmacia`
+* **Listar:** `GET http://localhost:8081/api/stock-farmacia`
+* **Consultar ID:** `GET http://localhost:8081/api/stock-farmacia/1`
+* **Actualizar:** `PUT http://localhost:8081/api/stock-farmacia/1`
+* **Eliminar:** `DELETE http://localhost:8081/api/stock-farmacia/1`
+
+### C. Prueba de Excepciones
+
+* **Endpoint:** `GET http://localhost:8081/api/stock-farmacia/999`
+* **Expectativa:** Retorna `404 Not Found` con mensaje JSON estructurado.
+
+*(Nota: En los métodos POST y PUT, el body debe ser: `{"productoId": 105, "cantidad": 100}`)*
+
