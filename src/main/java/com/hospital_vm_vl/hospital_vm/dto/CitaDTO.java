@@ -20,11 +20,11 @@ public class CitaDTO {
 
     @NotNull(message = "La fecha es obligatoria")
     @FutureOrPresent(message = "La fecha no puede ser en el pasado")
-    @Schema(description = "Fecha y hora programada para la cita", example = "2026-12-31T10:00:00")
+    @Schema(description = "Fecha y hora programada para la cita", type = "string", format = "date-time", example = "2026-12-31T10:00:00")
     private LocalDateTime fecha;
 
     @NotNull(message = "El total es obligatorio")
     @Min(value = 0, message = "El total no puede ser negativo")
-    @Schema(description = "Costo total de la atención", example = "50000")
+    @Schema(description = "Costo total de la atención", example = "50000.0")
     private Double total;
 }

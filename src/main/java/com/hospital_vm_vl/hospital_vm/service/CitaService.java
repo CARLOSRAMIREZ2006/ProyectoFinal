@@ -2,6 +2,7 @@ package com.hospital_vm_vl.hospital_vm.service;
 
 import com.hospital_vm_vl.hospital_vm.dto.CitaDTO;
 import com.hospital_vm_vl.hospital_vm.model.Cita;
+import org.springframework.transaction.annotation.Transactional;
 import com.hospital_vm_vl.hospital_vm.repository.CitaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,25 +16,47 @@ public class CitaService {
     private CitaRepository repository;
 
     public List<CitaDTO> findAll() {
-        return repository.findAll().stream().map(v -> {
-            CitaDTO dto = new CitaDTO();
-            dto.setId(v.getId());
-            dto.setClienteId(v.getClienteId());
-            dto.setFecha(v.getFecha());
-            dto.setTotal(v.getTotal());
-            return dto;
-        }).collect(Collectors.toList());
+        return repository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    public CitaDTO findById(Long id) {
+        Cita c = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada con ID: " + id));
+        return toDTO(c);
+    }
+
+    @Transactional
     public CitaDTO save(CitaDTO dto) {
-        Cita v = new Cita(null, dto.getClienteId(), LocalDateTime.now(), dto.getTotal());
-        Cita saved = repository.save(v);
+        // Mapeo manual: Si quieres puedes usar MapStruct luego, pero esto funciona perfecto
+        Cita c = new Cita(null, dto.getClienteId(), dto.getFecha(), dto.getTotal());
+        Cita saved = repository.save(c);
         dto.setId(saved.getId());
-        dto.setFecha(saved.getFecha());
         return dto;
     }
 
+    @Transactional
+    public CitaDTO update(Long id, CitaDTO dto) {
+        Cita c = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada con ID: " + id));
+        c.setClienteId(dto.getClienteId());
+        c.setFecha(dto.getFecha());
+        c.setTotal(dto.getTotal());
+        Cita updated = repository.save(c);
+        return toDTO(updated);
+    }
+
     public void delete(Long id) {
+        if (!repository.existsById(id)) throw new RuntimeException("Cita no encontrada");
         repository.deleteById(id);
+    }
+
+    // Método de utilidad para evitar código repetido (Buenas prácticas)
+    private CitaDTO toDTO(Cita c) {
+        CitaDTO dto = new CitaDTO();
+        dto.setId(c.getId());
+        dto.setClienteId(c.getClienteId());
+        dto.setFecha(c.getFecha());
+        dto.setTotal(c.getTotal());
+        return dto;
     }
 }
