@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -25,11 +26,23 @@ public class DetalleAtencionController {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener detalle por ID")
+    public ResponseEntity<DetalleAtencionDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
     @PostMapping
     @Operation(summary = "Registrar detalle", description = "Crea un nuevo detalle asociado a una atención")
     @ApiResponse(responseCode = "201", description = "Detalle creado exitosamente")
     public ResponseEntity<DetalleAtencionDTO> create(@Valid @RequestBody DetalleAtencionDTO dto) {
-        return ResponseEntity.status(201).body(service.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar detalle")
+    public ResponseEntity<DetalleAtencionDTO> update(@PathVariable Long id, @Valid @RequestBody DetalleAtencionDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")

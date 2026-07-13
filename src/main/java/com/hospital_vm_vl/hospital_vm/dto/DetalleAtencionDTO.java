@@ -24,6 +24,7 @@ public class DetalleAtencionDTO {
     @Schema(description = "Cantidad del producto", example = "2")
     private Integer cantidad;
 
+    @Positive(message = "El precio unitario debe ser mayor a cero")
     @Schema(description = "Precio unitario del producto", example = "1500.0")
     private Double precioUnitario;
 }
