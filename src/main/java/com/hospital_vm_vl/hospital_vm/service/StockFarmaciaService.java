@@ -37,7 +37,6 @@ public class StockFarmaciaService {
         StockFarmacia i = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado con ID: " + id));
         i.setCantidad(dto.getCantidad());
-        // Se mantiene productoId o se actualiza según tu regla de negocio
         i.setProductoId(dto.getProductoId());
         StockFarmacia updated = repository.save(i);
         return toDTO(updated);
