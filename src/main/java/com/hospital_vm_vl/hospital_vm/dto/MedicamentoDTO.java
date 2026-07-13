@@ -4,6 +4,7 @@ import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Data
@@ -22,6 +23,7 @@ public class MedicamentoDTO {
     @Schema(description = "Precio de venta al público", example = "2500.0")
     private Double precio;
 
+    @Min(value = 0, message = "El stock no puede ser negativo")
     @Schema(description = "Stock actual en bodega", example = "100")
     private Integer stock;
 }
