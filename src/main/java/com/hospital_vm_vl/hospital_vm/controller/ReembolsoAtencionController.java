@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -25,11 +26,23 @@ public class ReembolsoAtencionController {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener reembolso por ID")
+    public ResponseEntity<ReembolsoAtencionDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
     @PostMapping
     @Operation(summary = "Crear reembolso", description = "Registra una nueva solicitud de reembolso")
     @ApiResponse(responseCode = "201", description = "Reembolso creado exitosamente")
     public ResponseEntity<ReembolsoAtencionDTO> create(@Valid @RequestBody ReembolsoAtencionDTO dto) {
-        return ResponseEntity.status(201).body(service.save(dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Actualizar reembolso")
+    public ResponseEntity<ReembolsoAtencionDTO> update(@PathVariable Long id, @Valid @RequestBody ReembolsoAtencionDTO dto) {
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
