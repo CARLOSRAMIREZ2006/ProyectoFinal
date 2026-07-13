@@ -27,56 +27,61 @@ public class MedicamentoServiceTest {
 
     @Test
     void testFindAll() {
-        // Given
+        // GIVEN
         Medicamento p1 = new Medicamento(1L, "Producto A", 100.0, 10);
         when(repository.findAll()).thenReturn(Arrays.asList(p1));
 
-        // When
+        // WHEN
         List<MedicamentoDTO> resultado = service.findAll();
 
-        // Then
+        // THEN
+        assertNotNull(resultado);
         assertEquals(1, resultado.size());
-        assertEquals("Producto A", resultado.get(0).getNombre());
+        assertEquals(p1.getNombre(), resultado.get(0).getNombre());
+        assertEquals(p1.getPrecio(), resultado.get(0).getPrecio());
         verify(repository, times(1)).findAll();
     }
 
     @Test
     void testFindById_Success() {
-        // Given
+        // GIVEN
         Medicamento p1 = new Medicamento(1L, "Producto A", 100.0, 10);
         when(repository.findById(1L)).thenReturn(Optional.of(p1));
 
-        // When
+        // WHEN
         MedicamentoDTO resultado = service.findById(1L);
 
-        // Then
+        // THEN
         assertNotNull(resultado);
-        assertEquals("Producto A", resultado.getNombre());
+        assertEquals(p1.getNombre(), resultado.getNombre());
+        assertEquals(p1.getPrecio(), resultado.getPrecio());
     }
 
     @Test
     void testFindById_NotFound() {
-        // Given
+        // GIVEN
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        // Then
+        // WHEN / THEN
         assertThrows(RuntimeException.class, () -> service.findById(1L));
     }
 
     @Test
     void testSave() {
-        // Given
+        // GIVEN
         MedicamentoDTO dto = new MedicamentoDTO();
         dto.setNombre("Producto Nuevo");
         dto.setPrecio(50.0);
         Medicamento saved = new Medicamento(1L, "Producto Nuevo", 50.0, 5);
         when(repository.save(any(Medicamento.class))).thenReturn(saved);
 
-        // When
+        // WHEN
         MedicamentoDTO resultado = service.save(dto);
 
-        // Then
-        assertEquals(1L, resultado.getId());
+        // THEN
+        assertNotNull(resultado.getId());
+        assertEquals(dto.getNombre(), resultado.getNombre());
+        assertEquals(dto.getPrecio(), resultado.getPrecio());
         verify(repository, times(1)).save(any(Medicamento.class));
     }
 }

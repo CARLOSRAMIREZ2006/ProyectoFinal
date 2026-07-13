@@ -25,19 +25,38 @@ public class StockFarmaciaServiceTest {
 
     @Test
     void testFindById_Success() {
+        // GIVEN
         StockFarmacia i = new StockFarmacia(1L, 101L, 50);
         when(repository.findById(1L)).thenReturn(Optional.of(i));
 
+        // WHEN
         StockFarmaciaDTO resultado = service.findById(1L);
 
-        assertEquals(50, resultado.getCantidad());
-        assertEquals(101L, resultado.getProductoId());
+        // THEN
+        assertNotNull(resultado);
+        assertEquals(i.getCantidad(), resultado.getCantidad());
+        assertEquals(i.getProductoId(), resultado.getProductoId());
+        verify(repository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testFindById_NotFound() {
+        // GIVEN
+        when(repository.findById(999L)).thenReturn(Optional.empty());
+
+        // WHEN / THEN
+        assertThrows(RuntimeException.class, () -> service.findById(999L));
     }
 
     @Test
     void testDelete() {
+        // GIVEN
         doNothing().when(repository).deleteById(1L);
+
+        // WHEN
         service.delete(1L);
+
+        // THEN
         verify(repository, times(1)).deleteById(1L);
     }
 }
