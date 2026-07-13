@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ConvenioSaludService {
+    private static final Logger log = LoggerFactory.getLogger(ConvenioSaludService.class);
+
     @Autowired
     private ConvenioSaludRepository repository;
 
@@ -20,7 +24,10 @@ public class ConvenioSaludService {
 
     public ConvenioSaludDTO findById(Long id) {
         ConvenioSalud c = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Convenio no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Convenio no encontrado con ID: {}", id);
+                    return new RuntimeException("Convenio no encontrado con ID: " + id);
+                });
         return toDTO(c);
     }
 
@@ -35,7 +42,10 @@ public class ConvenioSaludService {
     @Transactional
     public ConvenioSaludDTO update(Long id, ConvenioSaludDTO dto) {
         ConvenioSalud c = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Convenio no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Convenio no encontrado con ID: {}", id);
+                    return new RuntimeException("Convenio no encontrado con ID: " + id);
+                });
         c.setNombre(dto.getNombre());
         c.setDescuento(dto.getDescuento());
         c.setProductoId(dto.getProductoId());
@@ -44,7 +54,10 @@ public class ConvenioSaludService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Convenio no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Convenio no encontrado con ID: {}", id);
+            throw new RuntimeException("Convenio no encontrado");
+        }
         repository.deleteById(id);
     }
 

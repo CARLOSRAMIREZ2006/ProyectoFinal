@@ -9,9 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class LiquidacionAtencionService {
+    private static final Logger log = LoggerFactory.getLogger(LiquidacionAtencionService.class);
+
     @Autowired
     private LiquidacionAtencionRepository repository;
 
@@ -21,7 +25,10 @@ public class LiquidacionAtencionService {
 
     public LiquidacionAtencionDTO findById(Long id) {
         LiquidacionAtencion f = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Liquidación no encontrada con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Liquidación no encontrada con ID: {}", id);
+                    return new RuntimeException("Liquidación no encontrada con ID: " + id);
+                });
         return toDTO(f);
     }
 
@@ -35,7 +42,10 @@ public class LiquidacionAtencionService {
     @Transactional
     public LiquidacionAtencionDTO update(Long id, LiquidacionAtencionDTO dto) {
         LiquidacionAtencion f = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Liquidación no encontrada con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Liquidación no encontrada con ID: {}", id);
+                    return new RuntimeException("Liquidación no encontrada con ID: " + id);
+                });
         f.setVentaId(dto.getVentaId());
         f.setMontoTotal(dto.getMontoTotal());
         LiquidacionAtencion updated = repository.save(f);
@@ -43,7 +53,10 @@ public class LiquidacionAtencionService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Liquidación no encontrada");
+        if (!repository.existsById(id)) {
+            log.warn("Liquidación no encontrada con ID: {}", id);
+            throw new RuntimeException("Liquidación no encontrada");
+        }
         repository.deleteById(id);
     }
 

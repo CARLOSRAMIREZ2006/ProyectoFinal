@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class MedicamentoService {
+    private static final Logger log = LoggerFactory.getLogger(MedicamentoService.class);
+
     @Autowired
     private MedicamentoRepository repository;
 
@@ -20,7 +24,10 @@ public class MedicamentoService {
 
     public MedicamentoDTO findById(Long id) {
         Medicamento p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Medicamento no encontrado con ID: {}", id);
+                    return new RuntimeException("Medicamento no encontrado con ID: " + id);
+                });
         return toDTO(p);
     }
 
@@ -35,7 +42,10 @@ public class MedicamentoService {
     @Transactional
     public MedicamentoDTO update(Long id, MedicamentoDTO dto) {
         Medicamento p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medicamento no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Medicamento no encontrado con ID: {}", id);
+                    return new RuntimeException("Medicamento no encontrado con ID: " + id);
+                });
         p.setNombre(dto.getNombre());
         p.setPrecio(dto.getPrecio());
         p.setStock(dto.getStock());
@@ -44,7 +54,10 @@ public class MedicamentoService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Medicamento no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Medicamento no encontrado con ID: {}", id);
+            throw new RuntimeException("Medicamento no encontrado");
+        }
         repository.deleteById(id);
     }
 

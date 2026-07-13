@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class EntregaMedicamentoService {
+    private static final Logger log = LoggerFactory.getLogger(EntregaMedicamentoService.class);
+
     @Autowired
     private EntregaMedicamentoRepository repository;
 
@@ -20,7 +24,10 @@ public class EntregaMedicamentoService {
 
     public EntregaMedicamentoDTO findById(Long id) {
         EntregaMedicamento d = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Entrega no encontrada con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Entrega no encontrada con ID: {}", id);
+                    return new RuntimeException("Entrega no encontrada con ID: " + id);
+                });
         return toDTO(d);
     }
 
@@ -35,7 +42,10 @@ public class EntregaMedicamentoService {
     @Transactional
     public EntregaMedicamentoDTO update(Long id, EntregaMedicamentoDTO dto) {
         EntregaMedicamento d = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Entrega no encontrada con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Entrega no encontrada con ID: {}", id);
+                    return new RuntimeException("Entrega no encontrada con ID: " + id);
+                });
         d.setVentaId(dto.getVentaId());
         d.setDireccion(dto.getDireccion());
         d.setEstado(dto.getEstado());
@@ -44,7 +54,10 @@ public class EntregaMedicamentoService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Entrega no encontrada");
+        if (!repository.existsById(id)) {
+            log.warn("Entrega no encontrada con ID: {}", id);
+            throw new RuntimeException("Entrega no encontrada");
+        }
         repository.deleteById(id);
     }
 

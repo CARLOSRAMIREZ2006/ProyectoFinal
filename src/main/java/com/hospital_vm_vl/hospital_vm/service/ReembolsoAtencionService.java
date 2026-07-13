@@ -9,9 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class ReembolsoAtencionService {
+    private static final Logger log = LoggerFactory.getLogger(ReembolsoAtencionService.class);
+
     @Autowired
     private DevolucionRepository repository;
 
@@ -21,7 +25,10 @@ public class ReembolsoAtencionService {
 
     public ReembolsoAtencionDTO findById(Long id) {
         ReembolsoAtencion d = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reembolso no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Reembolso no encontrado con ID: {}", id);
+                    return new RuntimeException("Reembolso no encontrado con ID: " + id);
+                });
         return toDTO(d);
     }
 
@@ -35,7 +42,10 @@ public class ReembolsoAtencionService {
     @Transactional
     public ReembolsoAtencionDTO update(Long id, ReembolsoAtencionDTO dto) {
         ReembolsoAtencion d = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reembolso no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Reembolso no encontrado con ID: {}", id);
+                    return new RuntimeException("Reembolso no encontrado con ID: " + id);
+                });
         d.setVentaId(dto.getVentaId());
         d.setMotivo(dto.getMotivo());
         ReembolsoAtencion updated = repository.save(d);
@@ -43,7 +53,10 @@ public class ReembolsoAtencionService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Reembolso no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Reembolso no encontrado con ID: {}", id);
+            throw new RuntimeException("Reembolso no encontrado");
+        }
         repository.deleteById(id);
     }
 

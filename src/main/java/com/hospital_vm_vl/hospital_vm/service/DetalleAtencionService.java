@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class DetalleAtencionService {
+    private static final Logger log = LoggerFactory.getLogger(DetalleAtencionService.class);
+
     @Autowired
     private DetalleAtencionRepository repository;
 
@@ -20,7 +24,10 @@ public class DetalleAtencionService {
 
     public DetalleAtencionDTO findById(Long id) {
         DetalleAtencion d = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Detalle no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Detalle no encontrado con ID: {}", id);
+                    return new RuntimeException("Detalle no encontrado con ID: " + id);
+                });
         return toDTO(d);
     }
 
@@ -35,7 +42,10 @@ public class DetalleAtencionService {
     @Transactional
     public DetalleAtencionDTO update(Long id, DetalleAtencionDTO dto) {
         DetalleAtencion d = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Detalle no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Detalle no encontrado con ID: {}", id);
+                    return new RuntimeException("Detalle no encontrado con ID: " + id);
+                });
         d.setVentaId(dto.getVentaId());
         d.setProductoId(dto.getProductoId());
         d.setCantidad(dto.getCantidad());
@@ -45,7 +55,10 @@ public class DetalleAtencionService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Detalle no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Detalle no encontrado con ID: {}", id);
+            throw new RuntimeException("Detalle no encontrado");
+        }
         repository.deleteById(id);
     }
 

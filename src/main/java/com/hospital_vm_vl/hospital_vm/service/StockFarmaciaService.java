@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class StockFarmaciaService {
+    private static final Logger log = LoggerFactory.getLogger(StockFarmaciaService.class);
+
     @Autowired
     private StockFarmaciaRepository repository;
 
@@ -20,7 +24,10 @@ public class StockFarmaciaService {
 
     public StockFarmaciaDTO findById(Long id) {
         StockFarmacia i = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inventario no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Inventario no encontrado con ID: {}", id);
+                    return new RuntimeException("Inventario no encontrado con ID: " + id);
+                });
         return toDTO(i);
     }
 
@@ -35,7 +42,10 @@ public class StockFarmaciaService {
     @Transactional
     public StockFarmaciaDTO update(Long id, StockFarmaciaDTO dto) {
         StockFarmacia i = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Inventario no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Inventario no encontrado con ID: {}", id);
+                    return new RuntimeException("Inventario no encontrado con ID: " + id);
+                });
         i.setCantidad(dto.getCantidad());
         i.setProductoId(dto.getProductoId());
         StockFarmacia updated = repository.save(i);
@@ -43,7 +53,10 @@ public class StockFarmaciaService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Inventario no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Inventario no encontrado con ID: {}", id);
+            throw new RuntimeException("Inventario no encontrado");
+        }
         repository.deleteById(id);
     }
 

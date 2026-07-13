@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PacienteService {
+    private static final Logger log = LoggerFactory.getLogger(PacienteService.class);
+
     @Autowired
     private PacienteRepository repository;
 
@@ -19,7 +23,10 @@ public class PacienteService {
     }
 
     public PacienteDTO findById(Long id) {
-        Paciente c = repository.findById(id).orElseThrow(() -> new RuntimeException("Paciente no encontrado con ID: " + id));
+        Paciente c = repository.findById(id).orElseThrow(() -> {
+                    log.warn("Paciente no encontrado con ID: {}", id);
+                    return new RuntimeException("Paciente no encontrado con ID: " + id);
+                });
         return toDTO(c);
     }
 
@@ -33,7 +40,10 @@ public class PacienteService {
 
     @Transactional
     public PacienteDTO update(Long id, PacienteDTO dto) {
-        Paciente c = repository.findById(id).orElseThrow(() -> new RuntimeException("Paciente no encontrado con ID: " + id));
+        Paciente c = repository.findById(id).orElseThrow(() -> {
+                    log.warn("Paciente no encontrado con ID: {}", id);
+                    return new RuntimeException("Paciente no encontrado con ID: " + id);
+                });
         c.setNombre(dto.getNombre());
         c.setEmail(dto.getEmail());
         c.setTelefono(dto.getTelefono());
@@ -42,7 +52,10 @@ public class PacienteService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Paciente no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Paciente no encontrado con ID: {}", id);
+            throw new RuntimeException("Paciente no encontrado");
+        }
         repository.deleteById(id);
     }
 

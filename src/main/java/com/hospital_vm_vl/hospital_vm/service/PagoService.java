@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PagoService {
+    private static final Logger log = LoggerFactory.getLogger(PagoService.class);
+
     @Autowired
     private PagoRepository repository;
 
@@ -20,7 +24,10 @@ public class PagoService {
 
     public PagoDTO findById(Long id) {
         Pago p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pago no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Pago no encontrado con ID: {}", id);
+                    return new RuntimeException("Pago no encontrado con ID: " + id);
+                });
         return toDTO(p);
     }
 
@@ -35,7 +42,10 @@ public class PagoService {
     @Transactional
     public PagoDTO update(Long id, PagoDTO dto) {
         Pago p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pago no encontrado con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Pago no encontrado con ID: {}", id);
+                    return new RuntimeException("Pago no encontrado con ID: " + id);
+                });
         p.setVentaId(dto.getVentaId());
         p.setMonto(dto.getMonto());
         p.setMetodoPago(dto.getMetodoPago());
@@ -44,7 +54,10 @@ public class PagoService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Pago no encontrado");
+        if (!repository.existsById(id)) {
+            log.warn("Pago no encontrado con ID: {}", id);
+            throw new RuntimeException("Pago no encontrado");
+        }
         repository.deleteById(id);
     }
 

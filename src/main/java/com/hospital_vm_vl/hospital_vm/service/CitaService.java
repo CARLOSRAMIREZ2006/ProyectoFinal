@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class CitaService {
+    private static final Logger log = LoggerFactory.getLogger(CitaService.class);
+
     @Autowired
     private CitaRepository repository;
 
@@ -21,7 +25,10 @@ public class CitaService {
 
     public CitaDTO findById(Long id) {
         Cita c = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Cita no encontrada con ID: {}", id);
+                    return new RuntimeException("Cita no encontrada con ID: " + id);
+                });
         return toDTO(c);
     }
 
@@ -37,7 +44,10 @@ public class CitaService {
     @Transactional
     public CitaDTO update(Long id, CitaDTO dto) {
         Cita c = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada con ID: " + id));
+                .orElseThrow(() -> {
+                    log.warn("Cita no encontrada con ID: {}", id);
+                    return new RuntimeException("Cita no encontrada con ID: " + id);
+                });
         c.setClienteId(dto.getClienteId());
         c.setFecha(dto.getFecha());
         c.setTotal(dto.getTotal());
@@ -46,7 +56,10 @@ public class CitaService {
     }
 
     public void delete(Long id) {
-        if (!repository.existsById(id)) throw new RuntimeException("Cita no encontrada");
+        if (!repository.existsById(id)) {
+            log.warn("Cita no encontrada con ID: {}", id);
+            throw new RuntimeException("Cita no encontrada");
+        }
         repository.deleteById(id);
     }
 
